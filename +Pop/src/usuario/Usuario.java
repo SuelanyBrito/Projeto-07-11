@@ -12,6 +12,7 @@ public class Usuario implements Comparable<Usuario> {
 	private String nome, email, senha, imagem;
 	private LocalDate dataDeNascimento;
 	private TipoUsuario tipoUsuario;
+	
 
 	private List<Usuario> amigos;
 
@@ -99,13 +100,18 @@ public class Usuario implements Comparable<Usuario> {
 	public Notificacao getNotificacoes() {
 		return notificacoes;
 	}
-
-	public int getPops() {
-		return pops;
-	}
 	
 	public List<Post> getPost(){
 		return this.postagens;
+	}
+	
+	public String getTipoUsuarioString(){
+		if (pops < 500) {
+			return "Normal Pop";
+		} else if (pops >= 500 && pops < 1000) {
+			return "Celebridade Pop";
+		} 
+		return "Icone Pop";
 	}
 
 	// Setters
@@ -155,21 +161,22 @@ public class Usuario implements Comparable<Usuario> {
 
 	// Curtir e Rejeitar
 	
-	//public Post getPost(Post post) {
+	public Post getPost(int index) {
 		
-		//return this.postagens.get(index);
-	//}
+		return this.postagens.get(index);
+	}
 	
 
 	public void curtir(Post post) {
-
-		tipoUsuario.curtir(post);
+		post.pops(tipoUsuario.curtir(post));
+		post.setLike(1);
 
 	}
 
 	public void rejeitar(Post post) {
-
-		tipoUsuario.rejeitar(post);
+		
+		post.pops(tipoUsuario.rejeitar(post));
+		post.setDeslike(1);
 
 	}
 

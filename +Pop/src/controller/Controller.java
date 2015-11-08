@@ -389,11 +389,11 @@ public class Controller implements Serializable {
 	}
 	
 	public String getPost(int post){
-		 return this.logado.getPost().get(post).toString();
+		 return this.logado.getPost(post).toString();
 	}
 	
 	public String getConteudoPost(int indice, int post) throws Exception{
-		Post postagem = this.logado.getPost().get(post);
+		Post postagem = this.logado.getPost(post);
 		if(indice >= postagem.getConteudoDoPost().size()){
 			throw new Exception("Item #"+indice+" nao existe nesse post, ele possui apenas "+ postagem.getConteudoDoPost().size()+" itens distintos.");
 		} else if(indice < 0){
@@ -402,6 +402,38 @@ public class Controller implements Serializable {
 		return postagem.getConteudoDoPost().get(indice);
 	}
 	
+	public String getPopularidade() {
+		return this.logado.getTipoUsuarioString();
+	}
 	
+	public void rejeitarPost(String email, int post){
+		Usuario amigo = this.pesquisarUsuario(email);
+		amigo.rejeitar(amigo.getPost(post));
+	}
+	
+	public int getPopsPost(int post){
+		return this.logado.getPost(post).getPopularidade();
+	}
+	
+	public int qtdCurtidasDePost(int post){
+		return this.logado.getPost(post).getLike();
+	}
+	
+	public int qtdRejeicoesDePost(int post){
+		return this.logado.getPost(post).getDeslike();
+	}
+	
+	public int getPopsUsuario(String email) throws Exception{
+		if (this.logado != null){
+			throw new Exception("Erro na consulta de Pops. Um usuarix ainda esta logadx.");
+		}
+		
+		Usuario usuario = pesquisarUsuario(email);
+		return usuario.calculaPopularidade();
+	}
+	
+	public int getPopsUsuario(){	
+		return this.logado.calculaPopularidade();
+	}
 
 }

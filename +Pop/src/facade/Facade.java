@@ -125,4 +125,33 @@ public class Facade {
 	public String getConteudoPost(int indice, int post) throws Exception{
 		return this.controller.getConteudoPost(indice, post);
 	}
+	
+	public String getPopularidade() {
+		return this.controller.getPopularidade();
+	}
+	
+	public void rejeitarPost(String amigo, int post){
+		this.controller.rejeitarPost(amigo, post);
+	}
+	
+	public int getPopsPost(int post){
+		return this.controller.getPopsPost(post);
+	}
+	
+	public int qtdCurtidasDePost(int post){
+		return this.controller.qtdCurtidasDePost(post);
+	}
+	
+	public int qtdRejeicoesDePost(int post){
+		return this.controller.qtdRejeicoesDePost(post);
+	}
+	
+	public int getPopsUsuario(String usuario) throws Exception{
+		return this.controller.getPopsUsuario(usuario);
+	}
+	
+	public int getPopsUsuario(){
+		return this.controller.getPopsUsuario();
+	}
+	
 }

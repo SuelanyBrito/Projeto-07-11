@@ -9,24 +9,29 @@ public class Post {
 	
 	private static final int NUMERO_MAXIMO_DE_CARACTERES = 200;
 
-
-
-	private String mensagemInicial;
 	private UtilitiesPost utilPost;
-	private List<Midia> midia;
-	private int like, dislike;
-	private LocalDateTime dataCriacao;
+	
+	private String mensagemInicial;
+	
 	private HashMap<String, Integer> hashtags;
-	private String texto;
-
+	private List<Midia> midia;
 	private List<String> conteudoDoPost;
 	
+	
+	private int like;
+	private int deslike;
+	private int popularidade;
+	
+	private LocalDateTime dataCriacao;
+	private String texto;
+
 	public Post(String msg, LocalDateTime data) {
 		
 		this.mensagemInicial = msg;
 		
+		this.popularidade = 0;
 		this.like = 0;
-		this.dislike = 0;
+		this.deslike = 0;
 
 		this.utilPost = new UtilitiesPost();
 		this.conteudoDoPost = new ArrayList<String>();
@@ -51,7 +56,7 @@ public class Post {
 	}
 
 	public int getPopularidade() {
-		return like - dislike;
+		return this.popularidade;
 	}
 
 	public List<Midia> getMidia() {
@@ -62,12 +67,8 @@ public class Post {
 		return conteudoDoPost;
 	}
 	
-	public int getLike() {
-		return like;
-	}
-
-	public int getDislike() {
-		return dislike;
+	public void pops(int pops) {
+		this.popularidade += pops;
 	}
 
 	public LocalDateTime getDataCriacao() {
@@ -104,6 +105,24 @@ public class Post {
 	}
 
 	
+	
+	public int getLike() {
+		return like;
+	}
+
+	public void setLike(int like) {
+		this.like += like;
+	}
+
+	public void setDeslike(int deslike) {
+		this.deslike += deslike;
+	}
+
+	public int getDeslike() {
+		return deslike;
+	}
+
+
 	public String toString(){
 		return this.mensagemInicial + " (" + this.getDataEHora() +")";
 	}
