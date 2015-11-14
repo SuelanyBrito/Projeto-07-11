@@ -68,17 +68,17 @@ public class UtilitiesPost {
 	}
 	
 	
-	public void capturaHashTags(List<Hashtag> hashtags, String mensagem) {
-
-		// Nao esta funcionando para este caso:
-		// "Nao eh possivel criar o post. As hashtags devem comecar com '#'.
-		// Erro na hashtag: 'almoco'."
-		// criaPost mensagem="Depois do programa vou almocar com a familia.
-		// #familia almoco #paz" data="02/08/2015 11:48:00"
-
+	public void capturaHashTags(List<Hashtag> hashtags, String mensagem) throws Exception {
+		
 		String[] palavras = mensagem.split(" ");
+		
+		int controleFor = 0;
 		for (String palavra : palavras) {
-			if (palavra.startsWith("#")) {
+			if (controleFor > 0 && palavra.startsWith("#") == false) {
+				throw new Exception("Nao eh possivel criar o post. As hashtags devem comecar com '#'. Erro na hashtag: "+"'"+palavra+"'.");
+			}
+			else if (palavra.startsWith("#")) {
+				controleFor += 1;
 				for (int i = 0; i < hashtags.size(); i++ ) {
 					if (hashtags.get(i).getNome().equals(palavra)) {
 						hashtags.get(i).aumentaQtde(1);
@@ -87,7 +87,7 @@ public class UtilitiesPost {
 						hashtags.add(novaHashtag);
 					}
 				}
-			}
+			} 
 		}
 	}
 

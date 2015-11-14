@@ -25,7 +25,7 @@ public class Post {
 	private LocalDateTime dataCriacao;
 	private String texto;
 
-	public Post(String msg, LocalDateTime data) {
+	public Post(String msg, LocalDateTime data) throws Exception {
 		
 		this.mensagemInicial = msg;
 		
