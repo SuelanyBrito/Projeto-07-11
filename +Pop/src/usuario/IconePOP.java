@@ -6,14 +6,14 @@ public class IconePOP implements TipoUsuario {
 
 	@Override
 	public int curtir(Post post) {
-		post.getHashtags().put("#epicwin", 1);
+		post.adicionaHashtag("#epicwin");
 		return 50;
 
 	}
 
 	@Override
 	public int rejeitar(Post post) {
-		post.getHashtags().put("#epicfail", 1);
+		post.adicionaHashtag("#epicfail");
 		return -50;
 
 	}

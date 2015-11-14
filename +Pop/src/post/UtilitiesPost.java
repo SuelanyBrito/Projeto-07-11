@@ -1,10 +1,9 @@
 package post;
 
 import java.time.LocalDateTime;
+
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 
 import exceptions.MensagemInvalidaException;
 
@@ -69,7 +68,7 @@ public class UtilitiesPost {
 	}
 	
 	
-	public void capturaHashTags(HashMap<String, Integer> hashtags, String mensagem) {
+	public void capturaHashTags(List<Hashtag> hashtags, String mensagem) {
 
 		// Nao esta funcionando para este caso:
 		// "Nao eh possivel criar o post. As hashtags devem comecar com '#'.
@@ -80,16 +79,13 @@ public class UtilitiesPost {
 		String[] palavras = mensagem.split(" ");
 		for (String palavra : palavras) {
 			if (palavra.startsWith("#")) {
-				if (hashtags.containsKey(palavra)) {
-					for (Entry<String, Integer> entry : hashtags.entrySet()) {
-						if (entry.getKey().equals(palavra)) {
-							String key = entry.getKey();
-							int value = entry.getValue() + 1;
-							hashtags.put(key, value);
-						}
+				for (int i = 0; i < hashtags.size(); i++ ) {
+					if (hashtags.get(i).getNome().equals(palavra)) {
+						hashtags.get(i).aumentaQtde(1);
+					} else{
+						Hashtag novaHashtag = new Hashtag(palavra);
+						hashtags.add(novaHashtag);
 					}
-				} else {
-					hashtags.put(palavra, 1);
 				}
 			}
 		}

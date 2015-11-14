@@ -1,8 +1,8 @@
 package post;
 
 import java.time.LocalDateTime;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class Post {
@@ -13,7 +13,7 @@ public class Post {
 	
 	private String mensagemInicial;
 	
-	private HashMap<String, Integer> hashtags;
+	private List<Hashtag> hashtags;
 	private List<Midia> midia;
 	private List<String> conteudoDoPost;
 	
@@ -37,7 +37,7 @@ public class Post {
 		this.conteudoDoPost = new ArrayList<String>();
 		
 		this.midia = new ArrayList<Midia>();
-		this.hashtags = new HashMap<String, Integer>();
+		this.hashtags = new ArrayList<Hashtag>();
 		this.texto = new String();
 		this.texto = utilPost.capturaTexto(msg);
 		
@@ -51,6 +51,10 @@ public class Post {
 
 	}
 
+	public void adicionaHashtag(String nome){
+		
+	}
+	
 	public static int getNumeroMaximoDeCaracteres() {
 		return NUMERO_MAXIMO_DE_CARACTERES;
 	}
@@ -87,17 +91,17 @@ public class Post {
 		return this.utilPost.capturaMsg(this.mensagemInicial);
 	}
 	
-	public HashMap<String, Integer> getHashtags() {
+	public List<Hashtag> getHashtags() {
 		return hashtags;
 	}
 	
 	public String getListaHashtags(){
 		String hashtags = "";
-		for (String key : this.getHashtags().keySet()) {
+		for (int i = 0; i < this.hashtags.size(); i++ ) {
 			if(hashtags.equals("")){
-				hashtags += key;
+				hashtags += this.hashtags.get(i).getNome();
 			} else{
-				hashtags += "," + key;
+				hashtags += "," + this.hashtags.get(i).getNome();
 			}
 			
 		 }
