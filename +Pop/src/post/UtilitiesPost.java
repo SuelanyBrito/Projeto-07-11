@@ -1,5 +1,6 @@
 package post;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import java.time.format.DateTimeFormatter;
@@ -7,7 +8,9 @@ import java.util.List;
 
 import exceptions.MensagemInvalidaException;
 
-public class UtilitiesPost {
+public class UtilitiesPost implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	public UtilitiesPost() {
 

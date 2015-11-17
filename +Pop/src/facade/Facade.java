@@ -1,5 +1,8 @@
 package facade;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import controller.Controller;
 
 public class Facade {
@@ -130,7 +133,7 @@ public class Facade {
 		return this.controller.getPopularidade();
 	}
 	
-	public void rejeitarPost(String amigo, int post){
+	public void rejeitarPost(String amigo, int post) throws FileNotFoundException, ClassNotFoundException, IOException{
 		this.controller.rejeitarPost(amigo, post);
 	}
 	

@@ -1,5 +1,6 @@
 package usuario;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.List;
 import notificoes.Notificacao;
 import post.Post;
 
-public class Usuario implements Comparable<Usuario> {
+public class Usuario implements Comparable<Usuario>,Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private String nome, email, senha, imagem;
 	private LocalDate dataDeNascimento;

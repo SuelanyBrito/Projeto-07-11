@@ -15,4 +15,5 @@ public class CadastroException extends Exception {
 	public CadastroException() {
 		super(MENSAGEM_PADRAO);
 	}
+	
 }

@@ -1,9 +1,10 @@
 package util;
 
+import java.time.DateTimeException;
+
 import java.time.LocalDate;
 
 import exceptions.CadastroException;
-import exceptions.DadoInvalidoException;
 import exceptions.MensagemInvalidaException;
 
 public class UtilitiesUser {
@@ -13,14 +14,16 @@ public class UtilitiesUser {
 	}
 
 	public void isDataValida(String data) throws CadastroException {
-
+		
 		if (data == null) {
 			throw new CadastroException(
 					"Data invalida, campo nao pode ser nulo.");
 		}
 		if (data.length() != 10) {
 			throw new CadastroException("Formato de data esta invalida.");
-		}
+		} 
+		
+	
 
 	}
 
@@ -98,25 +101,21 @@ public class UtilitiesUser {
 	}
 
 	public LocalDate dataFormatChanges(String data)
-			throws DadoInvalidoException {
+			throws CadastroException {
 
 		String[] newDate = data.split("/");
-
-		if (newDate.length != 3) {
-			throw new DadoInvalidoException("Data invalida");
-		}
-
-		if (newDate[0].length() != 2 || newDate[1].length() != 2
-				|| newDate[2].length() != 4) {
-			throw new DadoInvalidoException("Data invalida");
-		}
 
 		int dia = Integer.parseInt(newDate[0]);
 		int mes = Integer.parseInt(newDate[1]);
 		int ano = Integer.parseInt(newDate[2]);
-
-		LocalDate date = LocalDate.of(ano, mes, dia);
-
+		
+		LocalDate date;
+		
+		try{
+			date = LocalDate.of(ano, mes, dia);
+		} catch(DateTimeException e){
+			throw new CadastroException("Data nao existe.");
+		}
 		return date;
 
 	}

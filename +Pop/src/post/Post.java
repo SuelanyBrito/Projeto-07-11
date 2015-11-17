@@ -1,11 +1,14 @@
 package post;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Post {
+public class Post implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private static final int NUMERO_MAXIMO_DE_CARACTERES = 200;
 

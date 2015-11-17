@@ -1,5 +1,13 @@
 package controller;
 
+import java.io.File;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -7,10 +15,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import exceptions.AtualizacaoException;
+import exceptions.CadastroException;
+import exceptions.LogadoException;
 import exceptions.LoginException;
 import post.Post;
 import post.UtilitiesPost;
 import usuario.Usuario;
+import util.UtilitiesController;
 import util.UtilitiesUser;
 
 public class Controller implements Serializable {
@@ -20,15 +31,23 @@ public class Controller implements Serializable {
 
 	private Usuario logado;
 
+	private File diretorio;
+	private File arquivo;
+	
 	private UtilitiesUser utilUser;
 	private UtilitiesPost utilPost;
 	private UtilitiesController utilController;
 
 	public Controller() {
+		
+		this.diretorio = new File("Usuarios_Cadastrados");
+		this.diretorio.mkdir();
+		this.arquivo = new File(this.diretorio.getName()+"/"+"usuarios.txt");
+		
 		this.usuarios = new HashMap<String, Usuario>();
-		utilUser = new UtilitiesUser();
-		utilController = new UtilitiesController();
-		utilPost = new UtilitiesPost();
+		this.utilUser = new UtilitiesUser();
+		this.utilController = new UtilitiesController();
+		this.utilPost = new UtilitiesPost();
 
 	}
 
@@ -44,15 +63,38 @@ public class Controller implements Serializable {
 	 * 
 	 * @throws Exception
 	 */
-	public void fechaSistema() throws LoginException {
+	public void fechaSistema() throws Exception {
+		
 		if (this.logado != null) {
-			throw new LoginException("Nao foi possivel fechar o sistema. Um usuarix ainda esta logadx.");
+			throw new Exception("Nao foi possivel fechar o sistema. Um usuarix ainda esta logadx.");
 		}
+		arquivaUsuarios();
 	}
 
+	//Arquiva Usuarios
+	private void arquivaUsuarios() {
+		
+		try {
+			
+			FileOutputStream  outFile = new FileOutputStream(this.arquivo);
+			ObjectOutputStream stream = new ObjectOutputStream(outFile);
+						
+			for(String key: this.usuarios.keySet()){
+				stream.writeObject(this.usuarios.get(key));
+			}	
+			stream.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+	
 	public void cadastrarUsuario(String nome, String email, String senha, String data, String foto) throws Exception {
 
-		utilController.verificacao(nome, email, senha, data);
+		this.utilController.verificacao(nome, email, senha, data);
 		utilUser.isFotoValida(foto);
 
 		if (!usuarios.containsKey(email)) {
@@ -67,9 +109,11 @@ public class Controller implements Serializable {
 
 		utilController.verificacao(nome, email, senha, data);
 		this.cadastrarUsuario(nome, email, senha, data, "resources/default.jpg");
+		arquivaUsuarios();
 
 	}
 
+	
 	public void login(String email, String senha) throws Exception {
 		Usuario user = pesquisarUsuario(email);
 
@@ -86,9 +130,10 @@ public class Controller implements Serializable {
 		}
 	}
 
-	public void logout() throws Exception {
+	
+	public void logout() throws LogadoException {
 		if (this.logado == null) {
-			throw new LoginException("Nao eh possivel realizar logout.");
+			throw new LogadoException("Nao eh possivel realizar logout.");
 		} else {
 			this.logado = null;
 		}
@@ -235,38 +280,41 @@ public class Controller implements Serializable {
 	// Atualiza Perfil
 	public void atualizaPerfil(String atributo, String valor) throws Exception {
 		if (this.logado == null) {
-			throw new LoginException("Nao eh possivel atualizar um perfil.");
+			throw new LogadoException("Nao eh possivel atualizar um perfil. ");
 		} else {
-
-			try {
-
-				if (atributo.equals("Nome")) {
-					this.logado.setNome(valor);
-				} else if (atributo.equals("E-mail")) {
-					this.utilUser.isEmailValido(valor);
-					this.usuarios.remove(this.logado.getEmail(), this.logado);
-					this.logado.setEmail(valor);
-					this.usuarios.put(valor, this.logado);
-				} else if (atributo.equals("Senha")) {
-					throw new Exception("Eh necessario digitar velha senha");
-				} else if (atributo.equals("Foto")) {
-					this.utilUser.isFotoValida(valor);
-					this.logado.setImagem(valor);
-				} else if (atributo.equals("Data de Nascimento")) {
-					this.utilUser.isDataNascimentoValida(valor);
-					this.logado.setDataNascimento(utilUser.dataFormatChanges(valor));
-				} else {
-					throw new Exception("Atributo invalido.");
-				}
-
-			} catch (AtualizacaoException e) {
-
-				e.printStackTrace();
-				this.utilUser.isNomeValido(valor);
-
+			
+			
+			try{
+			if (atributo.equals("Nome")) {
+				logado.setNome(valor);
+			} 
+			else if (atributo.equals("E-mail")) {
+				this.usuarios.remove(this.logado.getEmail(), this.logado);
+				this.logado.setEmail(valor);
+				this.usuarios.put(valor, this.logado);
+			} 
+			else if (atributo.equals("Senha")) {
+				throw new Exception("Eh necessario digitar velha senha");
 			}
-
-		}
+			else if (atributo.equals("Foto")) {
+				this.logado.setImagem(valor);
+			} 
+			else if (atributo.equals("Data de Nascimento")) {
+				this.logado.setDataNascimento(utilUser.dataFormatChanges(valor));
+			} 
+			else {
+				throw new Exception("Atributo invalido.");
+			}
+			}
+			catch (NumberFormatException e){
+				throw new AtualizacaoException("Formato de data esta invalida.");
+			}catch (CadastroException e){
+				throw new AtualizacaoException(e.getMessage());
+			}
+	catch(Exception e){
+		e.printStackTrace();
+	} 
+	}
 	}
 
 	public void atualizaPerfil(String atributo, String valor, String velhaSenha) throws Exception {
@@ -283,12 +331,43 @@ public class Controller implements Serializable {
 			}
 		}
 	}
-
+	
 	private Usuario pesquisarUsuario(String email) {
 		if (usuarios.containsKey(email)) {
 			return usuarios.get(email);
+		} else{
+			return pesquisarUsuarioNoArquivo(email);
+		}
+		
+	}
+	
+	//Saber o q é??
+	@SuppressWarnings("resource")
+	private Usuario pesquisarUsuarioNoArquivo(String email) {
+		
+		ObjectInputStream in;
+		Usuario usuario;
+		
+		try {
+			in = new ObjectInputStream(new FileInputStream(arquivo));
+			do {
+				usuario = (Usuario)in.readObject();
+				if (usuario.getEmail().equals(email)) {
+					return usuario;
+				}
+			} while (usuario != null);
+			
+			in.close();	
+		
+		} catch (ClassNotFoundException | IOException e) {
+			//Usuario nao cadastrado
+			//Erro
+			//e.setStackTrace(null);
+			//e.printStackTrace();
+			return null;
 		}
 		return null;
+		
 	}
 
 	public void removeUsuario(String email) throws Exception {
@@ -297,6 +376,7 @@ public class Controller implements Serializable {
 		} else {
 			throw new Exception("Email inexistente");
 		}
+		arquivaUsuarios();
 	}
 
 	// Getters
@@ -324,7 +404,7 @@ public class Controller implements Serializable {
 		}
 	}
 
-	public String getNome(String email) {
+	public String getNome(String email) throws FileNotFoundException, ClassNotFoundException, IOException {
 		if (pesquisarUsuario(email) == null) {
 			return "O usuario com email " + email + " nao esta cadastrado.";
 		} else {
@@ -406,7 +486,7 @@ public class Controller implements Serializable {
 		return this.logado.getTipoUsuarioString();
 	}
 	
-	public void rejeitarPost(String email, int post){
+	public void rejeitarPost(String email, int post) throws FileNotFoundException, ClassNotFoundException, IOException{
 		Usuario amigo = this.pesquisarUsuario(email);
 		amigo.rejeitar(amigo.getPost(post));
 	}
