@@ -3,7 +3,7 @@ package util;
 import java.io.Serializable;
 
 
-import exceptions.CadastroException;
+import exceptions.DadoInvalidoException;
 import exceptions.LoginException;
 import usuario.Usuario;
 
@@ -28,12 +28,13 @@ public class UtilitiesController implements Serializable {
 	}
 
 	// Metodo q verifica dados do cadastrarUsuario
-	public void verificacao(String nome, String email, String senha, String data)
-			throws CadastroException {
-		utilUser.isNomeValido(nome);
-		utilUser.isSenhaValida(senha);
-		utilUser.isDataValida(data);
-		utilUser.isEmailValido(email);
+	public void verificacao(String nome, String email, String senha, String data) throws DadoInvalidoException {
+			utilUser.isNomeValido(nome);
+			utilUser.isSenhaValida(senha);
+			utilUser.isDataValida(data);
+			utilUser.isEmailValido(email);
+		
+		
 		
 	}
 	

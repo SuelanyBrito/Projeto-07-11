@@ -16,6 +16,7 @@ import java.util.Map;
 
 import exceptions.AtualizacaoException;
 import exceptions.CadastroException;
+import exceptions.DadoInvalidoException;
 import exceptions.LogadoException;
 import exceptions.LoginException;
 import post.Post;
@@ -93,23 +94,39 @@ public class Controller implements Serializable {
 	}
 	
 	public void cadastrarUsuario(String nome, String email, String senha, String data, String foto) throws Exception {
+		
+		try{
+			this.utilController.verificacao(nome, email, senha, data);
+			utilUser.isFotoValida(foto);
+			if (!usuarios.containsKey(email)) {
+				usuarios.put(email, new Usuario(nome, email, senha, utilUser.dataFormatChanges(data), foto));
 
-		this.utilController.verificacao(nome, email, senha, data);
-		utilUser.isFotoValida(foto);
-
-		if (!usuarios.containsKey(email)) {
-			usuarios.put(email, new Usuario(nome, email, senha, utilUser.dataFormatChanges(data), foto));
-
-		} else {
-			throw new Exception("usuario existente");
+			} else {
+				throw new Exception("usuario existente");
+			}
+			
+		}catch (NumberFormatException e){
+			throw new CadastroException("Formato de data esta invalida.");
+		}catch(DadoInvalidoException e){
+			throw new CadastroException(e.getMessage());
 		}
+		
 	}
 
 	public void cadastrarUsuario(String nome, String email, String senha, String data) throws Exception {
 
-		utilController.verificacao(nome, email, senha, data);
-		this.cadastrarUsuario(nome, email, senha, data, "resources/default.jpg");
-		arquivaUsuarios();
+		try{
+			this.utilController.verificacao(nome, email, senha, data);
+			this.cadastrarUsuario(nome, email, senha, data, "resources/default.jpg");
+			arquivaUsuarios();
+			
+		}catch (NumberFormatException e){
+			throw new CadastroException("Formato de data esta invalida.");
+			
+		}catch(DadoInvalidoException e){
+			throw new CadastroException(e.getMessage());
+		}
+		
 
 	}
 
@@ -280,15 +297,17 @@ public class Controller implements Serializable {
 	// Atualiza Perfil
 	public void atualizaPerfil(String atributo, String valor) throws Exception {
 		if (this.logado == null) {
-			throw new LogadoException("Nao eh possivel atualizar um perfil. ");
+			throw new LogadoException("Erro na atualizacao de perfil.");
 		} else {
 			
 			
 			try{
 			if (atributo.equals("Nome")) {
+				utilUser.isNomeValido(valor);
 				logado.setNome(valor);
 			} 
 			else if (atributo.equals("E-mail")) {
+				utilUser.isEmailValido(valor);
 				this.usuarios.remove(this.logado.getEmail(), this.logado);
 				this.logado.setEmail(valor);
 				this.usuarios.put(valor, this.logado);
@@ -297,18 +316,20 @@ public class Controller implements Serializable {
 				throw new Exception("Eh necessario digitar velha senha");
 			}
 			else if (atributo.equals("Foto")) {
+				utilUser.isFotoValida(valor);
 				this.logado.setImagem(valor);
 			} 
 			else if (atributo.equals("Data de Nascimento")) {
+				utilUser.isDataValida(valor);
 				this.logado.setDataNascimento(utilUser.dataFormatChanges(valor));
 			} 
 			else {
 				throw new Exception("Atributo invalido.");
 			}
-			}
-			catch (NumberFormatException e){
+			
+			}catch (NumberFormatException e){
 				throw new AtualizacaoException("Formato de data esta invalida.");
-			}catch (CadastroException e){
+			}catch (DadoInvalidoException e){
 				throw new AtualizacaoException(e.getMessage());
 			}
 	catch(Exception e){
