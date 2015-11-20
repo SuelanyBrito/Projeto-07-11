@@ -1,6 +1,8 @@
 package post;
 
-public class Imagem extends Midia {
+import java.io.Serializable;
+
+public class Imagem extends Midia implements Serializable {
 
 	/**
 	 * 

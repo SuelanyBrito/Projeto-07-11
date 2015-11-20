@@ -1,6 +1,7 @@
 package exceptions;
 
-public class MensagemInvalidaException extends Exception {
+
+public class MensagemInvalidaException extends Exception  {
 
 	/**
 	 * 

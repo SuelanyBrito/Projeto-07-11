@@ -226,14 +226,17 @@ public class Controller implements Serializable {
 			int qtdeDePedidos = this.logado.getPedidosDeAmizade().size();
 			Usuario usuario = pesquisarUsuario(email);
 
+			//Se nao tiver nenhum pedido de amizade e o usuario existir
 			if (qtdeDePedidos == 0 && usuario != null) {
 				throw new Exception(usuario.getNome()
 						+ " nao lhe enviou solicitacoes de amizade.");
 
+			//Se o usuario nao existir no sistema
 			} else if (usuario == null) {
 				throw new Exception("Um usuarix com email " + email
 						+ " nao esta cadastradx.");
-
+			
+			//Se usuario existir e tiver pedido de amizade
 			} else {
 				for (int i = 0; i < qtdeDePedidos; i++) {
 					if (this.logado.getPedidosDeAmizade().get(i).equals(email)) {
@@ -241,12 +244,6 @@ public class Controller implements Serializable {
 						usuario.adicionaAmigo(this.logado);
 						usuario.adicionaNotificacao(this.logado.getNome()
 								+ " aceitou sua amizade.");
-
-					} else if (i == qtdeDePedidos - 1
-							&& this.logado.getPedidosDeAmizade().get(i)
-									.equals(email) == false) {
-						throw new Exception(usuario.getNome()
-								+ " nao lhe enviou solicitacoes de amizade.");
 					}
 				}
 			}
@@ -276,11 +273,6 @@ public class Controller implements Serializable {
 						usuario.getNotificacoes().adicionaNotificacao(
 								this.logado.getNome()
 										+ " rejeitou sua amizade.");
-					} else if (i == qtdeDePedidos - 1
-							&& this.logado.getPedidosDeAmizade().get(i)
-									.equals(email) == false) {
-						throw new Exception(usuario.getNome()
-								+ " nao lhe enviou solicitacoes de amizade.");
 					}
 				}
 			}
@@ -385,7 +377,6 @@ public class Controller implements Serializable {
 
 	}
 
-	// Saber o q �??
 	@SuppressWarnings("resource")
 	private Usuario pesquisarUsuarioNoArquivo(String email) {
 
@@ -405,9 +396,6 @@ public class Controller implements Serializable {
 
 		} catch (ClassNotFoundException | IOException e) {
 			// Usuario nao cadastrado
-			// Erro
-			// e.setStackTrace(null);
-			// e.printStackTrace();
 			return null;
 		}
 		return null;
@@ -423,7 +411,14 @@ public class Controller implements Serializable {
 		arquivaUsuarios();
 	}
 
-	// Getters
+	public int qtdCurtidasDePost(int post) {
+		return this.logado.getPost(post).getLike();
+	}
+
+	public int qtdRejeicoesDePost(int post) {
+		return this.logado.getPost(post).getDeslike();
+	}
+	
 	public Collection<Usuario> getListaUsuarios() {
 		return usuarios.values();
 	}
@@ -544,14 +539,6 @@ public class Controller implements Serializable {
 
 	public int getPopsPost(int post) {
 		return this.logado.getPost(post).getPopularidade();
-	}
-
-	public int qtdCurtidasDePost(int post) {
-		return this.logado.getPost(post).getLike();
-	}
-
-	public int qtdRejeicoesDePost(int post) {
-		return this.logado.getPost(post).getDeslike();
 	}
 
 	public int getPopsUsuario(String email) throws Exception {

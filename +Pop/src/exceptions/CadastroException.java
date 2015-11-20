@@ -1,5 +1,6 @@
 package exceptions;
 
+
 public class CadastroException extends Exception {
 
 	/**

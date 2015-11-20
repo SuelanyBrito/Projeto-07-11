@@ -1,6 +1,7 @@
 package exceptions;
 
-public class LoginException extends Exception {
+
+public class LoginException extends Exception  {
 
 	/**
 	 * 

@@ -1,6 +1,8 @@
 package post;
 
-public class Audio extends Midia {
+import java.io.Serializable;
+
+public class Audio extends Midia implements Serializable {
 
 	/**
 	 * 

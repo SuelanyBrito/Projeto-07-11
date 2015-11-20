@@ -13,11 +13,11 @@ public class UtilitiesController implements Serializable {
 	public UtilitiesUser utilUser;
 
 	public UtilitiesController() {
-
 		utilUser = new UtilitiesUser();
 
 	}
-
+	
+	
 	// Metodo q verifica dados do cadastrarUsuario
 	public void verificacao(String nome, String email, String senha, String data) throws DadoInvalidoException {
 			utilUser.isNomeValido(nome);
