@@ -187,7 +187,7 @@ public class Controller implements Serializable {
 			throw new Exception("O usuario " + email + " nao esta cadastrado no +pop.");
 		}
 
-		logado.getNotificacoes().adicionaNotificacao(this.logado.getNome() + " quer sua amizade.");
+		usuario.adicionaNotificacao(this.logado.getNome() + " quer sua amizade.");
 
 		usuario.adicionaPedidoDeAmizade(this.logado.getEmail());
 	}
@@ -249,7 +249,7 @@ public class Controller implements Serializable {
 				throw new Exception(usuario.getNome() + " nao lhe enviou solicitacoes de amizade.");
 
 			} else if (usuario == null) {
-				throw new Exception("O usuario " + email + " nao esta cadastrado no +pop.");
+				throw new Exception("Um usuarix com email " + email + " nao esta cadastradx.");
 
 			} else {
 				for (int i = 0; i < qtdeDePedidos; i++) {
@@ -289,9 +289,11 @@ public class Controller implements Serializable {
 	}
 
 	public void curtirPost(String email, int pops) {
+		Usuario usuario = this.pesquisarUsuario(email);
+		usuario.getNotificacoes().adicionaNotificacao(this.logado.getNome() +" curtiu seu post de "+usuario.getPost(pops).getDataEHora());
+		this.logado.curtir(usuario.getPost(pops));
 		
-	//	this.logado.curtir(post);
-
+		
 	}
 
 	// Atualiza Perfil

@@ -66,6 +66,10 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 	public void adicionaPedidoDeAmizade(String email) {
 		this.pedidosDeAmizade.add(email);
 	}
+	
+	public void adicionaNotificacao(String msg) {
+		this.notificacoes.adicionaNotificacao(msg);
+	}
 
 	// Getters
 	public String getEmail() {

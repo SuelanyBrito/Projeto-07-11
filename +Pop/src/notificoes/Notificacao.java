@@ -12,7 +12,7 @@ public class Notificacao implements Serializable {
 
 	public Notificacao() {
 		
-		notificacoes = new ArrayList<>();
+		notificacoes = new ArrayList<String>();
 
 	}
 
