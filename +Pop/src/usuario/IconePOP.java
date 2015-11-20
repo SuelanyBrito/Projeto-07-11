@@ -1,8 +1,12 @@
 package usuario;
 
+import java.io.Serializable;
+
 import post.Post;
 
-public class IconePOP implements TipoUsuario {
+public class IconePOP implements TipoUsuario, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public int curtir(Post post) {

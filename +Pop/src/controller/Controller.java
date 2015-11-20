@@ -34,17 +34,17 @@ public class Controller implements Serializable {
 
 	private File diretorio;
 	private File arquivo;
-	
+
 	private UtilitiesUser utilUser;
 	private UtilitiesPost utilPost;
 	private UtilitiesController utilController;
 
 	public Controller() {
-		
+
 		this.diretorio = new File("Usuarios_Cadastrados");
 		this.diretorio.mkdir();
-		this.arquivo = new File(this.diretorio.getName()+"/"+"usuarios.txt");
-		
+		this.arquivo = new File(this.diretorio.getName() + "/" + "usuarios.txt");
+
 		this.usuarios = new HashMap<String, Usuario>();
 		this.utilUser = new UtilitiesUser();
 		this.utilController = new UtilitiesController();
@@ -65,79 +65,86 @@ public class Controller implements Serializable {
 	 * @throws Exception
 	 */
 	public void fechaSistema() throws Exception {
-		
+
 		if (this.logado != null) {
-			throw new Exception("Nao foi possivel fechar o sistema. Um usuarix ainda esta logadx.");
+			throw new Exception(
+					"Nao foi possivel fechar o sistema. Um usuarix ainda esta logadx.");
 		}
 		arquivaUsuarios();
 	}
 
-	//Arquiva Usuarios
+	// Arquiva Usuarios
 	private void arquivaUsuarios() {
-		
+
 		try {
-			
-			FileOutputStream  outFile = new FileOutputStream(this.arquivo);
+
+			FileOutputStream outFile = new FileOutputStream(this.arquivo);
 			ObjectOutputStream stream = new ObjectOutputStream(outFile);
-						
-			for(String key: this.usuarios.keySet()){
+
+			for (String key : this.usuarios.keySet()) {
 				stream.writeObject(this.usuarios.get(key));
-			}	
+			}
 			stream.close();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		
-		
+
 	}
-	
-	public void cadastrarUsuario(String nome, String email, String senha, String data, String foto) throws Exception {
-		
-		try{
+
+	public void cadastrarUsuario(String nome, String email, String senha,
+			String data, String foto) throws Exception {
+
+		try {
 			this.utilController.verificacao(nome, email, senha, data);
-			utilUser.isFotoValida(foto);
+			this.utilUser.isFotoValida(foto);
+			
 			if (!usuarios.containsKey(email)) {
-				usuarios.put(email, new Usuario(nome, email, senha, utilUser.dataFormatChanges(data), foto));
+				usuarios.put(
+						email,
+						new Usuario(nome, email, senha, utilUser
+								.dataFormatChanges(data), foto));
 
 			} else {
-				throw new Exception("usuario existente");
+				throw new CadastroException("Usuarix existente");
 			}
-			
-		}catch (NumberFormatException e){
+
+		} catch (NumberFormatException e) {
 			throw new CadastroException("Formato de data esta invalida.");
-		}catch(DadoInvalidoException e){
+			
+		} catch (DadoInvalidoException e) {
 			throw new CadastroException(e.getMessage());
 		}
-		
+
 	}
 
-	public void cadastrarUsuario(String nome, String email, String senha, String data) throws Exception {
+	public void cadastrarUsuario(String nome, String email, String senha,
+			String data) throws Exception {
 
-		try{
+		try {
 			this.utilController.verificacao(nome, email, senha, data);
-			this.cadastrarUsuario(nome, email, senha, data, "resources/default.jpg");
+			this.cadastrarUsuario(nome, email, senha, data,
+					"resources/default.jpg");
 			arquivaUsuarios();
-			
-		}catch (NumberFormatException e){
+
+		} catch (NumberFormatException e) {
 			throw new CadastroException("Formato de data esta invalida.");
-			
-		}catch(DadoInvalidoException e){
+
+		} catch (DadoInvalidoException e) {
 			throw new CadastroException(e.getMessage());
 		}
-		
 
 	}
 
-	
 	public void login(String email, String senha) throws Exception {
 		Usuario user = pesquisarUsuario(email);
 
 		if (this.logado != null) {
-			throw new LoginException("Um usuarix ja esta logadx: " + this.logado.getNome() + ".");
+			throw new LoginException("Um usuarix ja esta logadx: "
+					+ this.logado.getNome() + ".");
 		} else if (user == null) {
-			throw new LoginException("Um usuarix com email " + email + " nao esta cadastradx.");
+			throw new LoginException("Um usuarix com email " + email
+					+ " nao esta cadastradx.");
 		} else {
 			if (user.getSenha().equals(senha)) {
 				this.logado = user;
@@ -147,7 +154,6 @@ public class Controller implements Serializable {
 		}
 	}
 
-	
 	public void logout() throws LogadoException {
 		if (this.logado == null) {
 			throw new LogadoException("Nao eh possivel realizar logout.");
@@ -173,7 +179,8 @@ public class Controller implements Serializable {
 						this.logado.adicionaAmigo(amigo);
 						amigo.adicionaAmigo(this.logado);
 					} else if (qtdeDePedidos - 1 == i
-							&& this.logado.getPedidosDeAmizade().get(i).equals(email) == false) {
+							&& this.logado.getPedidosDeAmizade().get(i)
+									.equals(email) == false) {
 						solicitaAmizade(email);
 					}
 				}
@@ -184,10 +191,12 @@ public class Controller implements Serializable {
 	private void solicitaAmizade(String email) throws Exception {
 		Usuario usuario = pesquisarUsuario(email);
 		if (usuario == null) {
-			throw new Exception("O usuario " + email + " nao esta cadastrado no +pop.");
+			throw new Exception("O usuario " + email
+					+ " nao esta cadastrado no +pop.");
 		}
 
-		usuario.adicionaNotificacao(this.logado.getNome() + " quer sua amizade.");
+		usuario.adicionaNotificacao(this.logado.getNome()
+				+ " quer sua amizade.");
 
 		usuario.adicionaPedidoDeAmizade(this.logado.getEmail());
 	}
@@ -202,7 +211,8 @@ public class Controller implements Serializable {
 				if (this.logado.getAmigos().get(i).getEmail().equals(email)) {
 					this.logado.removeAmigo(amigo);
 					amigo.removeAmigo(this.logado);
-					amigo.getNotificacoes().adicionaNotificacao(this.logado.getNome() + " removeu a sua amizade.");
+					amigo.getNotificacoes().adicionaNotificacao(
+							this.logado.getNome() + " removeu a sua amizade.");
 				}
 			}
 		}
@@ -217,20 +227,26 @@ public class Controller implements Serializable {
 			Usuario usuario = pesquisarUsuario(email);
 
 			if (qtdeDePedidos == 0 && usuario != null) {
-				throw new Exception(usuario.getNome() + " nao lhe enviou solicitacoes de amizade.");
+				throw new Exception(usuario.getNome()
+						+ " nao lhe enviou solicitacoes de amizade.");
 
 			} else if (usuario == null) {
-				throw new Exception("O usuario " + email + " nao esta cadastrado no +pop.");
+				throw new Exception("Um usuarix com email " + email
+						+ " nao esta cadastradx.");
 
 			} else {
 				for (int i = 0; i < qtdeDePedidos; i++) {
 					if (this.logado.getPedidosDeAmizade().get(i).equals(email)) {
 						this.logado.adicionaAmigo(usuario);
 						usuario.adicionaAmigo(this.logado);
+						usuario.adicionaNotificacao(this.logado.getNome()
+								+ " aceitou sua amizade.");
 
 					} else if (i == qtdeDePedidos - 1
-							&& this.logado.getPedidosDeAmizade().get(i).equals(email) == false) {
-						throw new Exception(usuario.getNome() + " nao lhe enviou solicitacoes de amizade.");
+							&& this.logado.getPedidosDeAmizade().get(i)
+									.equals(email) == false) {
+						throw new Exception(usuario.getNome()
+								+ " nao lhe enviou solicitacoes de amizade.");
 					}
 				}
 			}
@@ -246,19 +262,25 @@ public class Controller implements Serializable {
 			Usuario usuario = pesquisarUsuario(email);
 
 			if (qtdeDePedidos == 0 && usuario != null) {
-				throw new Exception(usuario.getNome() + " nao lhe enviou solicitacoes de amizade.");
+				throw new Exception(usuario.getNome()
+						+ " nao lhe enviou solicitacoes de amizade.");
 
 			} else if (usuario == null) {
-				throw new Exception("Um usuarix com email " + email + " nao esta cadastradx.");
+				throw new Exception("Um usuarix com email " + email
+						+ " nao esta cadastradx.");
 
 			} else {
 				for (int i = 0; i < qtdeDePedidos; i++) {
 					if (this.logado.getPedidosDeAmizade().get(i).equals(email)) {
 						this.logado.rejeitaAmizade(email);
-						usuario.getNotificacoes().adicionaNotificacao(this.logado.getNome() + " rejeitou sua amizade.");
+						usuario.getNotificacoes().adicionaNotificacao(
+								this.logado.getNome()
+										+ " rejeitou sua amizade.");
 					} else if (i == qtdeDePedidos - 1
-							&& this.logado.getPedidosDeAmizade().get(i).equals(email) == false) {
-						throw new Exception(usuario.getNome() + " nao lhe enviou solicitacoes de amizade.");
+							&& this.logado.getPedidosDeAmizade().get(i)
+									.equals(email) == false) {
+						throw new Exception(usuario.getNome()
+								+ " nao lhe enviou solicitacoes de amizade.");
 					}
 				}
 			}
@@ -273,11 +295,12 @@ public class Controller implements Serializable {
 		if (this.logado == null) {
 			throw new LoginException("Nao eh possivel criar um post.");
 		}
-		
-		LocalDateTime dataEHoraModificada = this.utilPost.dataPostFormatChange(dataEHora);
-		
+
+		LocalDateTime dataEHoraModificada = this.utilPost
+				.dataPostFormatChange(dataEHora);
+
 		Post post = new Post(mensagem, dataEHoraModificada);
-		
+
 		this.logado.adicionarPostagem(post);
 
 	}
@@ -288,12 +311,14 @@ public class Controller implements Serializable {
 
 	}
 
-	public void curtirPost(String email, int pops) {
+	public void curtirPost(String email, int numeroDoPost) {
+
 		Usuario usuario = this.pesquisarUsuario(email);
-		usuario.getNotificacoes().adicionaNotificacao(this.logado.getNome() +" curtiu seu post de "+usuario.getPost(pops).getDataEHora());
-		this.logado.curtir(usuario.getPost(pops));
-		
-		
+		this.logado.curtir(usuario.getPost(numeroDoPost));
+		usuario.getNotificacoes().adicionaNotificacao(
+				this.logado.getNome() + " curtiu seu post de "
+						+ usuario.getPost(numeroDoPost).getDataEHora() + ".");
+
 	}
 
 	// Atualiza Perfil
@@ -301,46 +326,41 @@ public class Controller implements Serializable {
 		if (this.logado == null) {
 			throw new LogadoException("Erro na atualizacao de perfil.");
 		} else {
-			
-			
-			try{
-			if (atributo.equals("Nome")) {
-				utilUser.isNomeValido(valor);
-				logado.setNome(valor);
-			} 
-			else if (atributo.equals("E-mail")) {
-				utilUser.isEmailValido(valor);
-				this.usuarios.remove(this.logado.getEmail(), this.logado);
-				this.logado.setEmail(valor);
-				this.usuarios.put(valor, this.logado);
-			} 
-			else if (atributo.equals("Senha")) {
-				throw new Exception("Eh necessario digitar velha senha");
-			}
-			else if (atributo.equals("Foto")) {
-				utilUser.isFotoValida(valor);
-				this.logado.setImagem(valor);
-			} 
-			else if (atributo.equals("Data de Nascimento")) {
-				utilUser.isDataValida(valor);
-				this.logado.setDataNascimento(utilUser.dataFormatChanges(valor));
-			} 
-			else {
-				throw new Exception("Atributo invalido.");
-			}
-			
-			}catch (NumberFormatException e){
+
+			try {
+				if (atributo.equals("Nome")) {
+					utilUser.isNomeValido(valor);
+					logado.setNome(valor);
+				} else if (atributo.equals("E-mail")) {
+					utilUser.isEmailValido(valor);
+					this.usuarios.remove(this.logado.getEmail(), this.logado);
+					this.logado.setEmail(valor);
+					this.usuarios.put(valor, this.logado);
+				} else if (atributo.equals("Senha")) {
+					throw new Exception("Eh necessario digitar velha senha");
+				} else if (atributo.equals("Foto")) {
+					utilUser.isFotoValida(valor);
+					this.logado.setImagem(valor);
+				} else if (atributo.equals("Data de Nascimento")) {
+					utilUser.isDataValida(valor);
+					this.logado.setDataNascimento(utilUser
+							.dataFormatChanges(valor));
+				} else {
+					throw new Exception("Atributo invalido.");
+				}
+
+			} catch (NumberFormatException e) {
 				throw new AtualizacaoException("Formato de data esta invalida.");
-			}catch (DadoInvalidoException e){
+			} catch (DadoInvalidoException e) {
 				throw new AtualizacaoException(e.getMessage());
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-	catch(Exception e){
-		e.printStackTrace();
-	} 
-	}
+		}
 	}
 
-	public void atualizaPerfil(String atributo, String valor, String velhaSenha) throws Exception {
+	public void atualizaPerfil(String atributo, String valor, String velhaSenha)
+			throws Exception {
 		if (this.logado == null) {
 			throw new LoginException("Nao eh possivel atualizar um perfil.");
 		} else {
@@ -349,48 +369,49 @@ public class Controller implements Serializable {
 					this.utilUser.isSenhaValida(valor);
 					this.logado.setSenha(valor);
 				} else {
-					throw new AtualizacaoException("A senha fornecida esta incorreta.");
+					throw new AtualizacaoException(
+							"A senha fornecida esta incorreta.");
 				}
 			}
 		}
 	}
-	
+
 	private Usuario pesquisarUsuario(String email) {
 		if (usuarios.containsKey(email)) {
 			return usuarios.get(email);
-		} else{
+		} else {
 			return pesquisarUsuarioNoArquivo(email);
 		}
-		
+
 	}
-	
-	//Saber o q é??
+
+	// Saber o q ï¿½??
 	@SuppressWarnings("resource")
 	private Usuario pesquisarUsuarioNoArquivo(String email) {
-		
+
 		ObjectInputStream in;
 		Usuario usuario;
-		
+
 		try {
 			in = new ObjectInputStream(new FileInputStream(arquivo));
 			do {
-				usuario = (Usuario)in.readObject();
+				usuario = (Usuario) in.readObject();
 				if (usuario.getEmail().equals(email)) {
 					return usuario;
 				}
 			} while (usuario != null);
-			
-			in.close();	
-		
+
+			in.close();
+
 		} catch (ClassNotFoundException | IOException e) {
-			//Usuario nao cadastrado
-			//Erro
-			//e.setStackTrace(null);
-			//e.printStackTrace();
+			// Usuario nao cadastrado
+			// Erro
+			// e.setStackTrace(null);
+			// e.printStackTrace();
 			return null;
 		}
 		return null;
-		
+
 	}
 
 	public void removeUsuario(String email) throws Exception {
@@ -427,7 +448,8 @@ public class Controller implements Serializable {
 		}
 	}
 
-	public String getNome(String email) throws FileNotFoundException, ClassNotFoundException, IOException {
+	public String getNome(String email) throws FileNotFoundException,
+			ClassNotFoundException, IOException {
 		if (pesquisarUsuario(email) == null) {
 			return "O usuario com email " + email + " nao esta cadastrado.";
 		} else {
@@ -435,10 +457,12 @@ public class Controller implements Serializable {
 		}
 	}
 
-	public String getInfoUsuario(String atributo, String emailUsuario) throws Exception {
+	public String getInfoUsuario(String atributo, String emailUsuario)
+			throws Exception {
 		Usuario user = pesquisarUsuario(emailUsuario);
 		if (user == null) {
-			throw new Exception("Um usuarix com email " + emailUsuario + " nao esta cadastradx.");
+			throw new Exception("Um usuarix com email " + emailUsuario
+					+ " nao esta cadastradx.");
 		} else {
 			if (atributo.equals("Nome")) {
 				return user.getNome();
@@ -458,7 +482,8 @@ public class Controller implements Serializable {
 
 	public String getInfoUsuario(String atributo) throws Exception {
 		if (this.logado == null) {
-			throw new LoginException("Nao eh possivel verificar informacoes do usuario.");
+			throw new LoginException(
+					"Nao eh possivel verificar informacoes do usuario.");
 		} else {
 			if (atributo.equals("Nome")) {
 				return this.logado.getNome();
@@ -476,67 +501,75 @@ public class Controller implements Serializable {
 		}
 
 	}
-	
-	
+
 	public String getPost(String atributo, int post) throws Exception {
 		Post postagem = this.logado.getPost().get(post);
-		
-		if (atributo.equals("Mensagem")){
+
+		if (atributo.equals("Mensagem")) {
 			return postagem.getMensagem();
-		} else if (atributo.equals("Data")){
+		} else if (atributo.equals("Data")) {
 			return postagem.getDataEHora();
-		} else if(atributo.equals("Hashtags")){
+		} else if (atributo.equals("Hashtags")) {
 			return postagem.getListaHashtags();
 		}
 		throw new Exception("Atributo invalido.");
 	}
-	
-	public String getPost(int post){
-		 return this.logado.getPost(post).toString();
+
+	public String getPost(int post) {
+		return this.logado.getPost(post).toString();
 	}
-	
-	public String getConteudoPost(int indice, int post) throws Exception{
+
+	public String getConteudoPost(int indice, int post) throws Exception {
 		Post postagem = this.logado.getPost(post);
-		if(indice >= postagem.getConteudoDoPost().size()){
-			throw new Exception("Item #"+indice+" nao existe nesse post, ele possui apenas "+ postagem.getConteudoDoPost().size()+" itens distintos.");
-		} else if(indice < 0){
-			throw new Exception("Requisicao invalida. O indice deve ser maior ou igual a zero.");
+		if (indice >= postagem.getConteudoDoPost().size()) {
+			throw new Exception("Item #" + indice
+					+ " nao existe nesse post, ele possui apenas "
+					+ postagem.getConteudoDoPost().size() + " itens distintos.");
+		} else if (indice < 0) {
+			throw new Exception(
+					"Requisicao invalida. O indice deve ser maior ou igual a zero.");
 		}
 		return postagem.getConteudoDoPost().get(indice);
 	}
-	
+
 	public String getPopularidade() {
 		return this.logado.getTipoUsuarioString();
 	}
-	
-	public void rejeitarPost(String email, int post) throws FileNotFoundException, ClassNotFoundException, IOException{
+
+	public void rejeitarPost(String email, int post)
+			throws FileNotFoundException, ClassNotFoundException, IOException {
 		Usuario amigo = this.pesquisarUsuario(email);
 		amigo.rejeitar(amigo.getPost(post));
 	}
-	
-	public int getPopsPost(int post){
+
+	public int getPopsPost(int post) {
 		return this.logado.getPost(post).getPopularidade();
 	}
-	
-	public int qtdCurtidasDePost(int post){
+
+	public int qtdCurtidasDePost(int post) {
 		return this.logado.getPost(post).getLike();
 	}
-	
-	public int qtdRejeicoesDePost(int post){
+
+	public int qtdRejeicoesDePost(int post) {
 		return this.logado.getPost(post).getDeslike();
 	}
-	
-	public int getPopsUsuario(String email) throws Exception{
-		if (this.logado != null){
-			throw new Exception("Erro na consulta de Pops. Um usuarix ainda esta logadx.");
+
+	public int getPopsUsuario(String email) throws Exception {
+		if (this.logado != null) {
+			throw new Exception(
+					"Erro na consulta de Pops. Um usuarix ainda esta logadx.");
 		}
-		
+
 		Usuario usuario = pesquisarUsuario(email);
 		return usuario.calculaPopularidade();
 	}
-	
-	public int getPopsUsuario(){	
+
+	public int getPopsUsuario() {
 		return this.logado.calculaPopularidade();
+	}
+
+	public int getTotalPosts() {
+		return this.logado.getPost().size();
 	}
 
 }

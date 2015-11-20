@@ -2,6 +2,11 @@ package post;
 
 public class Audio extends Midia {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public Audio(String conteudo) {
 		super(conteudo);
 

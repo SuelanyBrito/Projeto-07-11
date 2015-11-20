@@ -1,10 +1,13 @@
 package usuario;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import post.Post;
 
-public class CelebridadePOP implements TipoUsuario {
+public class CelebridadePOP implements TipoUsuario, Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	private LocalDate dataAtual;
 

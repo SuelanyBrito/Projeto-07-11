@@ -8,14 +8,13 @@ import java.util.List;
 import notificoes.Notificacao;
 import post.Post;
 
-public class Usuario implements Comparable<Usuario>,Serializable {
+public class Usuario implements Comparable<Usuario>, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private String nome, email, senha, imagem;
 	private LocalDate dataDeNascimento;
 	private TipoUsuario tipoUsuario;
-	
 
 	private List<Usuario> amigos;
 
@@ -38,6 +37,7 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 		this.notificacoes = new Notificacao();
 		this.pedidosDeAmizade = new ArrayList<String>();
 		this.postagens = new ArrayList<Post>();
+		this.tipoUsuario = new Normal();
 
 	}
 
@@ -65,10 +65,6 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 
 	public void adicionaPedidoDeAmizade(String email) {
 		this.pedidosDeAmizade.add(email);
-	}
-	
-	public void adicionaNotificacao(String msg) {
-		this.notificacoes.adicionaNotificacao(msg);
 	}
 
 	// Getters
@@ -107,17 +103,17 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 	public Notificacao getNotificacoes() {
 		return notificacoes;
 	}
-	
-	public List<Post> getPost(){
+
+	public List<Post> getPost() {
 		return this.postagens;
 	}
-	
-	public String getTipoUsuarioString(){
+
+	public String getTipoUsuarioString() {
 		if (pops < 500) {
 			return "Normal Pop";
 		} else if (pops >= 500 && pops < 1000) {
 			return "Celebridade Pop";
-		} 
+		}
 		return "Icone Pop";
 	}
 
@@ -163,25 +159,24 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 		}
 		return popularidade;
 	}
-	
-	
 
 	// Curtir e Rejeitar
-	
+
 	public Post getPost(int index) {
-		
+
 		return this.postagens.get(index);
 	}
-	
 
 	public void curtir(Post post) {
-		post.pops(tipoUsuario.curtir(post));
+		this.verificaTipoDeUsuario();
+		int pops = tipoUsuario.curtir(post);
+		post.pops(pops);
 		post.setLike(1);
 
 	}
 
 	public void rejeitar(Post post) {
-		
+
 		post.pops(tipoUsuario.rejeitar(post));
 		post.setDeslike(1);
 
@@ -207,7 +202,7 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 
 	}
 
-	public void verificaTipoDeUsuario() {
+	private void verificaTipoDeUsuario() {
 
 		if (pops < 500) {
 			changeToUsuarioNormal();
@@ -217,6 +212,10 @@ public class Usuario implements Comparable<Usuario>,Serializable {
 			changeToUsuarioIconePOP();
 		}
 
+	}
+
+	public void adicionaNotificacao(String msg) {
+		this.notificacoes.adicionaNotificacao(msg);
 	}
 
 	@Override

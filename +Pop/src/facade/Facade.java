@@ -77,6 +77,10 @@ public class Facade {
 	public void adicionaPops(int pops) {
 		this.controller.adicionaPops(pops);
 	}
+	
+	public void getTotalPost() {
+		this.controller.getTotalPosts();
+	}
 
 	// Remove Usuario
 	public void removeUsuario(String usuario) throws Exception {
