@@ -76,24 +76,33 @@ public class UtilitiesPost implements Serializable {
 		String[] palavras = mensagem.split(" ");
 		
 		int controleFor = 0;
+		
 		for (String palavra : palavras) {
 			if (controleFor > 0 && palavra.startsWith("#") == false) {
 				throw new Exception("Nao eh possivel criar o post. As hashtags devem comecar com '#'. Erro na hashtag: "+"'"+palavra+"'.");
 			}
 			else if (palavra.startsWith("#")) {
 				controleFor += 1;
-				for (int i = 0; i < hashtags.size(); i++ ) {
-					if (hashtags.get(i).getNome().equals(palavra)) {
-						hashtags.get(i).aumentaQtde(1);
-					} else{
-						Hashtag novaHashtag = new Hashtag(palavra);
-						hashtags.add(novaHashtag);
-					}
-				}
+				adicionaHashtag(hashtags, palavra);
 			} 
 		}
 	}
 
+	private void adicionaHashtag(List<Hashtag> hashtags, String palavra){
+		
+		Hashtag novaHashtag = new Hashtag(palavra);
+		for (int i = 0; i < hashtags.size(); i++ ) {
+			if (hashtags.get(i).getNome().equals(palavra)) {
+				hashtags.get(i).aumentaQtde(1);
+			} else{
+				novaHashtag = new Hashtag(palavra);
+			}
+		}
+		hashtags.add(novaHashtag);
+	}
+	
+	
+	
 	public void capturaAudio(List<Midia> conteudo,String mensagem) {
 
 		String[] palavras = mensagem.split("<audio>");

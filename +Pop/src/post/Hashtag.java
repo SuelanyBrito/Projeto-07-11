@@ -1,6 +1,10 @@
 package post;
 
-public class Hashtag {
+import java.io.Serializable;
+
+public class Hashtag implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	String nome;
 	int qtde;
