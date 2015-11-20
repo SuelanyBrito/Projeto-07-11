@@ -46,6 +46,7 @@ public class Controller implements Serializable {
 		this.arquivo = new File(this.diretorio.getName() + "/" + "usuarios.txt");
 
 		this.usuarios = new HashMap<String, Usuario>();
+		
 		this.utilUser = new UtilitiesUser();
 		this.utilController = new UtilitiesController();
 		this.utilPost = new UtilitiesPost();
@@ -557,6 +558,29 @@ public class Controller implements Serializable {
 
 	public int getTotalPosts() {
 		return this.logado.getPost().size();
+	}
+	
+	
+	
+	//FALTA IMPLEMENTACAO
+	public void atualizaRanking(){
+		
+	}
+	
+	public String getPostFeedNoticiasRecentes (int post){
+		return "";
+	}
+	
+	public String getPostFeedNoticiasMaisPopulares(int post){
+		return "";
+	}
+	
+	public void atualizaTrendingTopics(){
+		
+	}
+	
+	public void atualizaFeed(){
+		
 	}
 
 }

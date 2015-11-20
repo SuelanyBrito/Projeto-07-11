@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import Factory.FactoryChangeToUsuario;
 import notificoes.Notificacao;
 import post.Post;
 
@@ -16,6 +17,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 	private LocalDate dataDeNascimento;
 	private TipoUsuario tipoUsuario;
 
+	
 	private List<Usuario> amigos;
 
 	private Notificacao notificacoes;
@@ -24,6 +26,8 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 	private List<Post> postagens;
 
 	private int pops;
+	
+	private FactoryChangeToUsuario factoryTipoUsuario;
 
 	public Usuario(String nome, String email, String senha,
 			LocalDate dataNascimento, String imagem) throws Exception {
@@ -37,7 +41,9 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 		this.notificacoes = new Notificacao();
 		this.pedidosDeAmizade = new ArrayList<String>();
 		this.postagens = new ArrayList<Post>();
-		this.tipoUsuario = new Normal();
+		this.factoryTipoUsuario = new FactoryChangeToUsuario();
+		verificaTipoDeUsuario();
+		
 
 	}
 
@@ -65,6 +71,21 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 
 	public void adicionaPedidoDeAmizade(String email) {
 		this.pedidosDeAmizade.add(email);
+	}
+	
+	private void verificaTipoDeUsuario() {
+
+		TipoUsuario novoTipo;
+		
+		if (this.pops < 500) {
+			novoTipo =  this.factoryTipoUsuario.changeToUsuarioNormal();
+		} else if (this.pops >= 500 && this.pops < 1000) {
+			novoTipo = this.factoryTipoUsuario.changeToUsuarioCelebridadePOP();
+		} else {
+			novoTipo = this.factoryTipoUsuario.changeToUsuarioIconePOP();
+		}
+
+		this.tipoUsuario = novoTipo;
 	}
 
 	// Getters
@@ -168,7 +189,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 	}
 
 	public void curtir(Post post) {
-		this.verificaTipoDeUsuario();
+		verificaTipoDeUsuario();
 		int pops = tipoUsuario.curtir(post);
 		post.pops(pops);
 		post.setLike(1);
@@ -179,38 +200,6 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 
 		post.pops(tipoUsuario.rejeitar(post));
 		post.setDeslike(1);
-
-	}
-
-	// Mudança dinamica
-
-	private void changeToUsuarioNormal() {
-
-		tipoUsuario = new Normal();
-
-	}
-
-	private void changeToUsuarioCelebridadePOP() {
-
-		tipoUsuario = new CelebridadePOP();
-
-	}
-
-	private void changeToUsuarioIconePOP() {
-
-		tipoUsuario = new IconePOP();
-
-	}
-
-	private void verificaTipoDeUsuario() {
-
-		if (pops < 500) {
-			changeToUsuarioNormal();
-		} else if (pops >= 500 && pops < 1000) {
-			changeToUsuarioCelebridadePOP();
-		} else {
-			changeToUsuarioIconePOP();
-		}
 
 	}
 
@@ -232,6 +221,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 		return "Nome: " + getNome() + ";" + " Email: " + getEmail();
 	}
 
+	
 	// Metodo de comparacao entre usuarios para ordenacao
 	@Override
 	public int compareTo(Usuario otherUser) {

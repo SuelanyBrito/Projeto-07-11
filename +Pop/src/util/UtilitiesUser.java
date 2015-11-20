@@ -3,6 +3,7 @@ package util;
 import java.time.DateTimeException;
 
 
+
 import java.time.LocalDate;
 
 import exceptions.DadoInvalidoException;
@@ -10,9 +11,12 @@ import exceptions.MensagemInvalidaException;
 
 public class UtilitiesUser {
 
+	
+	
 	public UtilitiesUser() {
-
+		
 	}
+	
 
 	public void isDataValida(String data) throws DadoInvalidoException {
 		
@@ -36,10 +40,6 @@ public class UtilitiesUser {
 		if (nome.trim().equals("")) {
 			throw new DadoInvalidoException(
 					"Nome dx usuarix nao pode ser vazio.");
-		}
-		if (!(nome.matches("[A-Za-z?-?\\s]*+"))) {
-			throw new DadoInvalidoException(
-					"Nome so pode conter caracteres alfabeticos");
 		}
 	}
 

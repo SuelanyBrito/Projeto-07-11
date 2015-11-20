@@ -165,4 +165,27 @@ public class Facade {
 		return this.controller.getTotalPosts();
 	}
 	
+	
+	
+	//FALTA IMPLEMENTAR NO CONTROLLER
+	public void atualizaRanking(){
+		this.controller.atualizaRanking();
+	}
+	
+	public String getPostFeedNoticiasRecentes (int post){
+		return this.controller.getPostFeedNoticiasRecentes(post);
+	}
+	
+	public String getPostFeedNoticiasMaisPopulares(int post){
+		return this.controller.getPostFeedNoticiasMaisPopulares(post);
+	}
+	
+	public void atualizaTrendingTopics(){
+		this.controller.atualizaTrendingTopics();
+	}
+	
+	public void atualizaFeed(){
+		this.controller.atualizaFeed();
+	}
+	
 }
