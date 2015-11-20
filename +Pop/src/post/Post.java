@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import util.UtilitiesPost;
+
 public class Post implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,7 +57,7 @@ public class Post implements Serializable {
 	}
 
 	public void adicionaHashtag(String nome){
-		
+		this.utilPost.adicionaHashtag(this.hashtags, nome);
 	}
 	
 	public static int getNumeroMaximoDeCaracteres() {

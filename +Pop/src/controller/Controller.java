@@ -20,9 +20,9 @@ import exceptions.DadoInvalidoException;
 import exceptions.LogadoException;
 import exceptions.LoginException;
 import post.Post;
-import post.UtilitiesPost;
 import usuario.Usuario;
 import util.UtilitiesController;
+import util.UtilitiesPost;
 import util.UtilitiesUser;
 
 public class Controller implements Serializable {

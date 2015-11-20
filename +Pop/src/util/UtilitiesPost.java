@@ -1,4 +1,4 @@
-package post;
+package util;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -7,6 +7,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import exceptions.MensagemInvalidaException;
+import post.Audio;
+import post.Hashtag;
+import post.Imagem;
+import post.Midia;
+import post.Post;
 
 public class UtilitiesPost implements Serializable {
 
@@ -88,9 +93,10 @@ public class UtilitiesPost implements Serializable {
 		}
 	}
 
-	private void adicionaHashtag(List<Hashtag> hashtags, String palavra){
+	public void adicionaHashtag(List<Hashtag> hashtags, String palavra){
 		
 		Hashtag novaHashtag = new Hashtag(palavra);
+		
 		for (int i = 0; i < hashtags.size(); i++ ) {
 			if (hashtags.get(i).getNome().equals(palavra)) {
 				hashtags.get(i).aumentaQtde(1);
@@ -98,6 +104,7 @@ public class UtilitiesPost implements Serializable {
 				novaHashtag = new Hashtag(palavra);
 			}
 		}
+		
 		hashtags.add(novaHashtag);
 	}
 	
