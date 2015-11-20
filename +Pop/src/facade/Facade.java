@@ -161,4 +161,8 @@ public class Facade {
 		return this.controller.getPopsUsuario();
 	}
 	
+	public int getTotalPosts() {
+		return this.controller.getTotalPosts();
+	}
+	
 }
