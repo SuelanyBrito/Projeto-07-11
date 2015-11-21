@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import Factory.FactoryChangeToUsuario;
+import factory.FactoryChangeToUsuario;
 import notificoes.Notificacao;
 import post.Post;
 
