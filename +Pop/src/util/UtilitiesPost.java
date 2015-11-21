@@ -95,17 +95,21 @@ public class UtilitiesPost implements Serializable {
 
 	public void adicionaHashtag(List<Hashtag> hashtags, String palavra){
 		
-		Hashtag novaHashtag = new Hashtag(palavra);
+		String avaliacao = "diferente";
 		
 		for (int i = 0; i < hashtags.size(); i++ ) {
 			if (hashtags.get(i).getNome().equals(palavra)) {
 				hashtags.get(i).aumentaQtde(1);
-			} else{
-				novaHashtag = new Hashtag(palavra);
+				i = hashtags.size();
+				avaliacao = "igual";
 			}
 		}
+		if (avaliacao.equals("diferente")){
+			Hashtag novaHashtag = new Hashtag(palavra);
+			hashtags.add(novaHashtag);
+		}
 		
-		hashtags.add(novaHashtag);
+		
 	}
 	
 	

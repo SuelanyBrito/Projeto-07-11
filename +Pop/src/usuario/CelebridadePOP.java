@@ -9,7 +9,7 @@ public class CelebridadePOP implements TipoUsuario, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private LocalDate dataAtual;
+	private LocalDate dataAtual = LocalDate.now();
 	
 
 	@Override

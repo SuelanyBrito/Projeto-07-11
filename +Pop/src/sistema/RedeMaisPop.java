@@ -13,8 +13,8 @@ public class RedeMaisPop {
 	public RedeMaisPop() {
 
 		this.ranking = new RankingOfUsers();
-		facade = new Facade();
-		controller = new Controller();
+		this.facade = new Facade();
+		this.controller = new Controller();
 
 	}
 

@@ -24,14 +24,14 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 
 	private List<String> pedidosDeAmizade;
 	private List<Post> postagens;
-
-	private int pops;
 	
+	private int pops;
 	private FactoryChangeToUsuario factoryTipoUsuario;
 
 	public Usuario(String nome, String email, String senha,
 			LocalDate dataNascimento, String imagem) throws Exception {
 
+		
 		this.nome = nome;
 		this.email = email;
 		this.senha = senha;
@@ -42,6 +42,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 		this.pedidosDeAmizade = new ArrayList<String>();
 		this.postagens = new ArrayList<Post>();
 		this.factoryTipoUsuario = new FactoryChangeToUsuario();
+		this.pops = 0;
 		verificaTipoDeUsuario();
 		
 
@@ -62,11 +63,14 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 	public void rejeitaAmizade(String email) {
 		int qtdeDePedidos = getPedidosDeAmizade().size();
 
+		int indice = 0;
 		for (int i = 0; i < qtdeDePedidos; i++) {
 			if (getPedidosDeAmizade().get(i).equals(email)) {
-				this.pedidosDeAmizade.remove(i);
+				indice = i;
 			}
 		}
+		
+		this.pedidosDeAmizade.remove(indice);
 	}
 
 	public void adicionaPedidoDeAmizade(String email) {
@@ -74,12 +78,12 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 	}
 	
 	private void verificaTipoDeUsuario() {
-
+		
 		TipoUsuario novoTipo;
 		
-		if (this.pops < 500) {
+		if (pops < 500) {
 			novoTipo =  this.factoryTipoUsuario.changeToUsuarioNormal();
-		} else if (this.pops >= 500 && this.pops < 1000) {
+		} else if (pops >= 500 && pops < 1000) {
 			novoTipo = this.factoryTipoUsuario.changeToUsuarioCelebridadePOP();
 		} else {
 			novoTipo = this.factoryTipoUsuario.changeToUsuarioIconePOP();
@@ -88,46 +92,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 		this.tipoUsuario = novoTipo;
 	}
 
-	// Getters
-	public String getEmail() {
-		return this.email;
-	}
-
-	public String getImagem() {
-		return this.imagem;
-	}
-
-	public String getSenha() {
-		return this.senha;
-	}
-
-	public LocalDate getDataNascimento() {
-		return this.dataDeNascimento;
-	}
-
-	public String getNome() {
-		return this.nome;
-	}
-
-	public List<Usuario> getAmigos() {
-		return this.amigos;
-	}
-
-	public TipoUsuario getTipoUsuario() {
-		return tipoUsuario;
-	}
-
-	public List<String> getPedidosDeAmizade() {
-		return this.pedidosDeAmizade;
-	}
-
-	public Notificacao getNotificacoes() {
-		return notificacoes;
-	}
-
-	public List<Post> getPost() {
-		return this.postagens;
-	}
+	
 
 	public String getTipoUsuarioString() {
 		if (pops < 500) {
@@ -138,33 +103,8 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 		return "Icone Pop";
 	}
 
-	// Setters
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setImagem(String imagem) {
-		this.imagem = imagem;
-	}
-
-	public void setSenha(String senha) {
-		this.senha = senha;
-	}
-
-	public void setNome(String nome) throws Exception {
-		this.nome = nome;
-	}
-
-	public void setDataNascimento(LocalDate dataNascimento) {
-		this.dataDeNascimento = dataNascimento;
-	}
-
-	public void setPops(int pops) {
-		this.pops = pops;
-	}
-
+	
 	// Post
-
 	public void adicionarPostagem(Post post) {
 		postagens.add(post);
 	}
@@ -183,8 +123,7 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 
 	// Curtir e Rejeitar
 
-	public Post getPost(int index) {
-
+	public Post getPost(int index){
 		return this.postagens.get(index);
 	}
 
@@ -193,20 +132,90 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 		int pops = tipoUsuario.curtir(post);
 		post.pops(pops);
 		post.setLike(1);
-
 	}
 
 	public void rejeitar(Post post) {
-
+		verificaTipoDeUsuario();
 		post.pops(tipoUsuario.rejeitar(post));
 		post.setDeslike(1);
-
 	}
 
 	public void adicionaNotificacao(String msg) {
 		this.notificacoes.adicionaNotificacao(msg);
 	}
 
+	
+	// Getters
+		public String getEmail() {
+			return this.email;
+		}
+
+		public String getImagem() {
+			return this.imagem;
+		}
+
+		public String getSenha() {
+			return this.senha;
+		}
+
+		public LocalDate getDataNascimento() {
+			return this.dataDeNascimento;
+		}
+
+		public String getNome() {
+			return this.nome;
+		}
+
+		public List<Usuario> getAmigos() {
+			return this.amigos;
+		}
+
+		public TipoUsuario getTipoUsuario() {
+			return tipoUsuario;
+		}
+
+		public List<String> getPedidosDeAmizade() {
+			return this.pedidosDeAmizade;
+		}
+
+		public Notificacao getNotificacoes() {
+			return notificacoes;
+		}
+
+		public List<Post> getPost() {
+			return this.postagens;
+		}
+		
+		public int getPops() {
+			this.pops += calculaPopularidade();
+			return this.pops;
+		}
+		
+		// Setters
+		public void setEmail(String email) {
+			this.email = email;
+		}
+
+		public void setImagem(String imagem) {
+			this.imagem = imagem;
+		}
+
+		public void setSenha(String senha) {
+			this.senha = senha;
+		}
+
+		public void setNome(String nome) throws Exception {
+			this.nome = nome;
+		}
+
+		public void setDataNascimento(LocalDate dataNascimento) {
+			this.dataDeNascimento = dataNascimento;
+		}
+
+		public void setPops(int pops) {
+			this.pops += pops;
+		}
+		
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Usuario) {

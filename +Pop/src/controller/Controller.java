@@ -167,7 +167,7 @@ public class Controller implements Serializable {
 	// Adiciona Amigo
 	public void adicionaAmigo(String email) throws Exception {
 		if (this.logado == null) {
-			throw new LoginException("Nao eh possivel adicionar um amigo.");
+			throw new Exception("Nao eh possivel adicionar um amigo.");
 		} else {
 			int qtdeDePedidos = this.logado.getPedidosDeAmizade().size();
 
@@ -268,14 +268,18 @@ public class Controller implements Serializable {
 						+ " nao esta cadastradx.");
 
 			} else {
-				for (int i = 0; i < qtdeDePedidos; i++) {
-					if (this.logado.getPedidosDeAmizade().get(i).equals(email)) {
+				int index = 0;
+				do{
+					if (this.logado.getPedidosDeAmizade().get(index).equals(email)) {
 						this.logado.rejeitaAmizade(email);
 						usuario.getNotificacoes().adicionaNotificacao(
 								this.logado.getNome()
 										+ " rejeitou sua amizade.");
+						index = -1;
+					} else{
+						index ++;
 					}
-				}
+				}while (index != -1 );
 			}
 		}
 	}
@@ -300,7 +304,8 @@ public class Controller implements Serializable {
 
 	public void adicionaPops(int pops) {
 
-		logado.setPops(pops);
+		this.logado.setPops(pops);
+		
 
 	}
 
@@ -412,11 +417,27 @@ public class Controller implements Serializable {
 		arquivaUsuarios();
 	}
 
-	public int qtdCurtidasDePost(int post) {
+	public int qtdCurtidasDePost(int post) throws Exception {
+		if (post >= this.logado.getPost().size()) {
+			throw new Exception("Post #" + post
+					+ " nao existe. Usuarix possui apenas "
+					+ this.logado.getPost().size() + " post(s).");
+		} else if (post < 0) {
+			throw new Exception(
+					"Requisicao invalida. O indice deve ser maior ou igual a zero.");
+		}
 		return this.logado.getPost(post).getLike();
 	}
 
-	public int qtdRejeicoesDePost(int post) {
+	public int qtdRejeicoesDePost(int post) throws Exception {
+		if (post >= this.logado.getPost().size()) {
+			throw new Exception("Post #" + post
+					+ " nao existe. Usuarix possui apenas "
+					+ this.logado.getPost().size() + " post(s).");
+		} else if (post < 0) {
+			throw new Exception(
+					"Requisicao invalida. O indice deve ser maior ou igual a zero.");
+		}
 		return this.logado.getPost(post).getDeslike();
 	}
 	
@@ -535,7 +556,7 @@ public class Controller implements Serializable {
 	public void rejeitarPost(String email, int post)
 			throws FileNotFoundException, ClassNotFoundException, IOException {
 		Usuario amigo = this.pesquisarUsuario(email);
-		amigo.rejeitar(amigo.getPost(post));
+		this.logado.rejeitar(amigo.getPost(post));
 	}
 
 	public int getPopsPost(int post) {
@@ -549,11 +570,11 @@ public class Controller implements Serializable {
 		}
 
 		Usuario usuario = pesquisarUsuario(email);
-		return usuario.calculaPopularidade();
+		return usuario.getPops();
 	}
 
 	public int getPopsUsuario() {
-		return this.logado.calculaPopularidade();
+		return this.logado.getPops();
 	}
 
 	public int getTotalPosts() {

@@ -145,11 +145,11 @@ public class Facade {
 		return this.controller.getPopsPost(post);
 	}
 	
-	public int qtdCurtidasDePost(int post){
+	public int qtdCurtidasDePost(int post) throws Exception{
 		return this.controller.qtdCurtidasDePost(post);
 	}
 	
-	public int qtdRejeicoesDePost(int post){
+	public int qtdRejeicoesDePost(int post) throws Exception{
 		return this.controller.qtdRejeicoesDePost(post);
 	}
 	
