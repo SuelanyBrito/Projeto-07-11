@@ -234,8 +234,14 @@ public class Usuario implements Comparable<Usuario>, Serializable {
 	// Metodo de comparacao entre usuarios para ordenacao
 	@Override
 	public int compareTo(Usuario otherUser) {
-
-		return 0;
+		if(getPops() > otherUser.getPops()){
+			return 1;
+		} else if(getPops() < otherUser.getPops()){
+			return -1;
+		}
+		else{
+			return getNome().compareTo(otherUser.getNome());
+		}
 	}
 
 }
