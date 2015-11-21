@@ -21,6 +21,7 @@ import exceptions.LogadoException;
 import exceptions.LoginException;
 import post.Post;
 import sistema.TrendingTopics;
+import usuario.RankingOfUsers;
 import usuario.Usuario;
 import util.UtilitiesController;
 import util.UtilitiesPost;
@@ -41,6 +42,7 @@ public class Controller implements Serializable {
 	private UtilitiesController utilController;
 	
 	private TrendingTopics trendingTopics;
+	private RankingOfUsers ranking;
 
 	public Controller() {
 
@@ -55,6 +57,7 @@ public class Controller implements Serializable {
 		this.utilPost = new UtilitiesPost();
 		
 		this.trendingTopics = new TrendingTopics();
+		this.ranking = new RankingOfUsers();
 
 	}
 
@@ -76,7 +79,7 @@ public class Controller implements Serializable {
 		}
 		
 		arquivaUsuarios();
-		this.trendingTopics.adicionaUsuario();
+		this.ranking.adicionaUsuario();
 	}
 
 	// Arquiva Usuarios
@@ -114,7 +117,7 @@ public class Controller implements Serializable {
 				throw new CadastroException("Usuarix existente");
 			}
 			
-			this.trendingTopics.adicionaUsuario(novoUsuario);
+			this.ranking.adicionaUsuario(novoUsuario);
 			arquivaUsuarios();
 
 		} catch (NumberFormatException e) {
